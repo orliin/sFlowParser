@@ -64,8 +64,8 @@ if __name__ == '__main__':
         try:
             sflow_datagram = SFlowDatagram(unpacker)
             # print(sflow_datagram['agent_ip_address'])
-            if sflow_datagram['agent_ip_address'] == '10.10.0.21':
-                print(sflow_datagram)
+            #if sflow_datagram['agent_ip_address'] == '10.10.0.21':
+            print(sflow_datagram)
                 # print("###########################################")
         except Exception as e:
             logging.warning("Bad sflow datagram: {}".format(raw_data))
