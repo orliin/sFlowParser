@@ -1,6 +1,6 @@
 import logging
-from xdrlib import Unpacker
 from enum import Enum
+from xdrlib import Unpacker
 
 
 class SFlowFlowRecord:
@@ -54,6 +54,7 @@ class SFlowFlowRecord:
 class FlowDataRawHeader:
 
     class HeaderProtocol(Enum):
+        unknown = 0
         ETHERNET_ISO88023 = 1
         ISO88024_TOKENBUS = 2
         ISO88025_TOKENRING = 3
@@ -80,7 +81,7 @@ class FlowDataRawHeader:
     }
     '''
     def __init__(self, unpacker: Unpacker):
-        self.protocol = None
+        self.protocol = 0
         self.frame_length = None
         self.stripped = None
         self.header = None
@@ -88,7 +89,7 @@ class FlowDataRawHeader:
     @property
     def data(self):
         return dict(
-            protocol=self.HeaderProtocol(self.protocol)
+            # protocol=self.HeaderProtocol(self.protocol)
         )
 
 

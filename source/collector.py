@@ -1,11 +1,10 @@
-from socket import socket, AF_INET, SOCK_DGRAM
-from xdrlib import Unpacker
-from collections import deque
-
 import logging
 import pickle
+from collections import deque
+from socket import socket, AF_INET, SOCK_DGRAM
+from xdrlib import Unpacker
 
-from sflowparse.SFlowDatagram import SFlowDatagram
+from source.sflowparse.SFlowDatagram import SFlowDatagram
 
 MODE = '-file'  # -socket, -socket+file or -file
 RAW_DATA_FILENAME = 'raw.dat'
