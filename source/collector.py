@@ -5,7 +5,7 @@ from collections import deque
 import logging
 import pickle
 
-from sflowcollect.SFlowDatagram import SFlowDatagram
+from sflowparse.SFlowDatagram import SFlowDatagram
 
 MODE = '-file'  # -socket, -socket+file or -file
 RAW_DATA_FILENAME = 'raw.dat'

@@ -2,8 +2,8 @@ import logging
 import json
 from xdrlib import Unpacker
 
-from sflowcollect.SFlowFlowRecord import SFlowFlowRecord
-from sflowcollect.SFlowCounterRecord import SFlowCounterRecord
+from sflowparse.SFlowFlowRecord import SFlowFlowRecord
+from sflowparse.SFlowCounterRecord import SFlowCounterRecord
 
 
 class SFlowSample:

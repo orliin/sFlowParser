@@ -1,7 +1,7 @@
 import logging
 from xdrlib import Unpacker
 
-from sflowcollect.helpers import speed_to_string
+from sflowparse.helpers import speed_to_string
 
 
 class SFlowCounterRecord:
