@@ -1,7 +1,7 @@
 import logging
 from xdrlib import Unpacker
 
-from sflowparse.helpers import speed_to_string
+from source.sflowparse.helpers import speed_to_string
 
 
 class SFlowCounterRecord:
@@ -21,36 +21,36 @@ class SFlowCounterRecord:
         unpacker_counter_data = Unpacker(counter_data)
 
         if self.counter_format == SFlowCounterRecord.COUNTER_DATA_GENERIC_INTERFACE:
-            self.flow = GenericInterfaceCounters(unpacker_counter_data)
+            self.counter = GenericInterfaceCounters(unpacker_counter_data)
         elif self.counter_format == SFlowCounterRecord.COUNTER_DATA_ETHERNET_INTERFACE:
-            self.flow = EthernetInterfaceCounters(unpacker_counter_data)
+            self.counter = EthernetInterfaceCounters(unpacker_counter_data)
         elif self.counter_format == SFlowCounterRecord.COUNTER_DATA_TOKEN_RING:
             pass
-            self.flow = _(unpacker_counter_data)
+            self.counter = TokenRingCounters(unpacker_counter_data)
         elif self.counter_format == SFlowCounterRecord.COUNTER_DATA_VG_INTERFACE:
             pass
-            self.flow = _(unpacker_counter_data)
+            self.counter = VgInterfaceCounters(unpacker_counter_data)
         elif self.counter_format == SFlowCounterRecord.COUNTER_DATA_VLAN:
-            pass
-            self.flow = _(unpacker_counter_data)
+            self.counter = VlanCounters(unpacker_counter_data)
         elif self.counter_format == SFlowCounterRecord.COUNTER_DATA_PROCESSOR:
-            pass
-            self.flow = _(unpacker_counter_data)
+            self.counter = ProcessorCounters(unpacker_counter_data)
         else:
             logging.debug('read_flow_record:Unimplemented data_format (%d)' % self.flow_format)
 
     @property
     def data(self) -> dict:
         return dict(
+            counter_format=self.counter_format,
+            counter=self.counter.data
         )
 
 
 class GenericInterfaceCounters:
 
     def __init__(self, unpacker: Unpacker):
-        self.index = None
+        self.if_index = None
         self.if_type = None
-        self.speed = None
+        self.if_speed = None
         self.direction = None
         self.status = None
         self.in_octets = None
@@ -96,33 +96,58 @@ class GenericInterfaceCounters:
         #     unsigned int ifOutErrors;
         #     unsigned int ifPromiscuousMode;
 
-        self.index = unpacker.unpack_uint()
+        self.if_index = unpacker.unpack_uint()
         self.if_type = unpacker.unpack_uint()
-        self.speed = unpacker.unpack_uhyper()
-        self.direction = unpacker.unpack_uint()
-        self.status = unpacker.unpack_uint()
-        self.in_octets = unpacker.unpack_uhyper()
-        self.in_ucasts = unpacker.unpack_uint()
-        self.in_mcasts = unpacker.unpack_uint()
-        self.in_bcasts = unpacker.unpack_uint()
-        self.in_discards = unpacker.unpack_uint()
-        self.in_errors = unpacker.unpack_uint()
-        self.in_unknown_protos = unpacker.unpack_uint()
-        self.out_octets = unpacker.unpack_uhyper()
-        self.out_ucasts = unpacker.unpack_uint()
-        self.out_mcasts = unpacker.unpack_uint()
-        self.out_bcasts = unpacker.unpack_uint()
-        self.out_discards = unpacker.unpack_uint()
-        self.out_errors = unpacker.unpack_uint()
-        self.promiscuous_mode = unpacker.unpack_uint()
+        self.if_speed = unpacker.unpack_uhyper()
+        self.if_direction = unpacker.unpack_uint()
+        self.if_status = unpacker.unpack_uint()
+        self.if_in_octets = unpacker.unpack_uhyper()
+        self.if_in_ucasts = unpacker.unpack_uint()
+        self.if_in_mcasts = unpacker.unpack_uint()
+        self.if_in_bcasts = unpacker.unpack_uint()
+        self.if_in_discards = unpacker.unpack_uint()
+        self.if_in_errors = unpacker.unpack_uint()
+        self.if_in_unknown_protos = unpacker.unpack_uint()
+        self.if_out_octets = unpacker.unpack_uhyper()
+        self.if_out_ucasts = unpacker.unpack_uint()
+        self.if_out_mcasts = unpacker.unpack_uint()
+        self.if_out_bcasts = unpacker.unpack_uint()
+        self.if_out_discards = unpacker.unpack_uint()
+        self.if_out_errors = unpacker.unpack_uint()
+        self.if_promiscuous_mode = unpacker.unpack_uint()
 
     # TODO: change this to json
     def __repr__(self):
         return ('<IfCounters| idx: %d, speed: %s, in_octets: %d, out_octets: %d>' %
-                (self.index,
-                 speed_to_string(self.speed),
+                (self.if_index,
+                 speed_to_string(self.if_speed),
                  self.in_octets,
                  self.out_octets))
+
+    @property
+    def data(self) -> dict:
+        return dict(
+            if_index=self.if_index,
+            if_type=self.if_type,
+            if_speed=self.if_speed,
+            if_direction=self.if_direction,
+            if_status=self.if_status,
+            if_in_octets=self.if_in_octets,
+            if_in_ucasts=self.if_in_ucasts,
+            if_in_mcasts=self.if_in_mcasts,
+            if_in_bcasts=self.if_in_bcasts,
+            if_in_discards=self.if_in_discards,
+            if_in_errors=self.if_in_errors,
+            if_in_unknown_protos=self.if_in_unknown_protos,
+            if_out_octets=self.if_out_octets,
+            if_out_ucasts=self.if_out_ucasts,
+            if_out_mcasts=self.if_out_mcasts,
+            if_out_bcasts=self.if_out_bcasts,
+            if_out_discards=self.if_out_discards,
+            if_out_errors=self.if_out_errors,
+            if_promiscuous_mode=self.if_promiscuous_mode,
+        )
+
 
 
 class EthernetInterfaceCounters:
@@ -173,3 +198,21 @@ class EthernetInterfaceCounters:
         self.dot3_stats_frame_too_longs = unpacker.unpack_uint()
         self.dot3_stats_internal_mac_receive_errors = unpacker.unpack_uint()
         self.dot3_stats_symbol_errors = unpacker.unpack_uint()
+
+    @property
+    def data(self) -> dict:
+        return dict(
+            dot3_stats_alignment_errors=self.dot3_stats_alignment_errors,
+            dot3_stats_fcs_errors=self.dot3_stats_fcs_errors,
+            dot3_stats_single_collision_frames=self.dot3_stats_single_collision_frames,
+            dot3_stats_multiple_collision_frames=self.dot3_stats_multiple_collision_frames,
+            dot3_stats_sqe_test_errors=self.dot3_stats_sqe_test_errors,
+            dot3_stats_deferred_transmissions=self.dot3_stats_deferred_transmissions,
+            dot3_stats_late_collisions=self.dot3_stats_late_collisions,
+            dot3_stats_excessive_collisions=self.dot3_stats_excessive_collisions,
+            dot3_stats_internal_mac_transmit_errors=self.dot3_stats_internal_mac_transmit_errors,
+            dot3_stats_carrier_sense_errors=self.dot3_stats_carrier_sense_errors,
+            dot3_stats_frame_too_longs=self.dot3_stats_frame_too_longs,
+            dot3_stats_internal_mac_receive_errors=self.dot3_stats_internal_mac_receive_errors,
+            dot3_stats_symbol_errors=self.dot3_stats_symbol_errors,
+        )

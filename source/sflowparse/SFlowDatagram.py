@@ -3,8 +3,8 @@ from socket import ntohl
 import json
 import logging
 
-from sflowparse.SFlowSample import SFlowSample
-from sflowparse.helpers import ip_to_string, agent_ip_version_to_string
+from source.sflowparse.SFlowSample import SFlowSample
+from source.sflowparse.helpers import ip_to_string, agent_ip_version_to_string
 
 
 class SFlowDatagram:
