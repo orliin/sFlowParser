@@ -1,3 +1,3 @@
 FROM ubuntu:14.04
 MAINTAINER Orlin Tenchev <orliin@gmail.com>
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y python3 git
