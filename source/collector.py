@@ -71,6 +71,16 @@ if __name__ == '__main__':
             continue
             raise e
 
-        print(sflow_datagram)
+        #print(sflow_datagram)
+        for sample in sflow_datagram.data['samples']:
+            if sample['type'] == 1:
+                print("insert traffic,agent_ip_address={0},input_if={1},output_if={2} sample_pool={3},sequence_number={4},sampling_rate={5}"
+                      .format(sflow_datagram.data['agent_ip_address'],
+                              sample['sample']['input_if'],
+                              sample['sample']['output_if'],
+                              sample['sample']['sample_pool'],
+                              sample['sample']['sequence_number'],
+                              sample['sample']['sampling_rate']
+                              ))
 
         real_time_collector.add(sflow_datagram.data)
